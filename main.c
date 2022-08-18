@@ -2,5 +2,7 @@
 
 void main()
 {
-	P2 = 0xFE;
+	while (1) {
+		P2_0 = P3_1;
+	}
 }
