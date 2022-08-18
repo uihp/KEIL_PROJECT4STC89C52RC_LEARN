@@ -379,24 +379,14 @@
               <FilePath>.\delay.h</FilePath>
             </File>
             <File>
-              <FileName>matrixbtn.c</FileName>
+              <FileName>T0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\matrixbtn.c</FilePath>
+              <FilePath>.\T0.c</FilePath>
             </File>
             <File>
-              <FileName>matrixbtn.h</FileName>
+              <FileName>T0.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\matrixbtn.h</FilePath>
-            </File>
-            <File>
-              <FileName>segdisplay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\segdisplay.c</FilePath>
-            </File>
-            <File>
-              <FileName>segdisplay.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\segdisplay.h</FilePath>
+              <FilePath>.\T0.h</FilePath>
             </File>
           </Files>
         </Group>
