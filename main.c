@@ -1,9 +1,9 @@
 #include <REGX52.H>
 #include "T0.h"
+#include "LCD1602.h"
 #include "delay.h"
 
-int mode = 0;
-int temp = 0x80;
+unsigned int second, minute, hour;
 
 void T0Routine() interrupt 1
 {
@@ -11,28 +11,33 @@ void T0Routine() interrupt 1
 	T0Count++;
 	TL0 = 0x66;
 	TH0 = 0xFC;
-	if (T0Count >= 200) {
+	if (T0Count >= 1000) {
 		T0Count = 0;
-		if (mode) {
-			if (temp == 0x01) temp = 0x80;
-			else temp >>= 1;
-		} else {
-			if (temp == 0x80) temp = 0x01;
-			else temp <<= 1;
+		second++;
+		if (second >= 60) {
+			second = 0;
+			minute++;
+			if (minute >=60) {
+				minute = 0;
+				hour++;
+				if (hour >= 60) {
+					hour = 0;
+				}
+			}
 		}
-		P2 = ~temp;
 	}
 }
 
 void main()
 {
+	LCD_Init();
+	LCD_ShowString(1,1,"Clock:");
 	T0Set();
 	while (1) {
-		if (P3_1 == 0) {
-			delay(20);
-			while (P3_1 == 0);
-			delay(20);
-			mode = !mode;
-		}
+		LCD_ShowNum(2,1,hour,2);
+		LCD_ShowChar(2,3,':');
+		LCD_ShowNum(2,4,minute,2);
+		LCD_ShowChar(2,6,':');
+		LCD_ShowNum(2,7,second,2);
 	}
 }
