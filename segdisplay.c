@@ -31,5 +31,5 @@ void nixieDynamicShow(int number) {
 		}
 		temp = number;
 		loc = 8;
-	};
+	}
 }

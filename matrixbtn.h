@@ -2,5 +2,6 @@
 #define __MATRIXBTN_H__
 
 unsigned char matrixBtnScanByRowColCheck();
+unsigned char matrixBtnScanByFlip(char);
 
 #endif

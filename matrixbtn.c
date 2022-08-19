@@ -3,7 +3,7 @@
 
 unsigned char matrixBtnScanByRowColCheck()
 {
-	unsigned char btnCode;
+	static unsigned char btnCode;
 	P1 = 0xFF;
 	P1_0 = 0;
 	if (!P1_4) {delay(20);while(!P1_4);delay(20);btnCode=16;}
@@ -29,4 +29,30 @@ unsigned char matrixBtnScanByRowColCheck()
 	if (!P1_6) {delay(20);while(!P1_6);delay(20);btnCode=5;}
 	if (!P1_7) {delay(20);while(!P1_7);delay(20);btnCode=1;}
 	return btnCode;
+}
+
+unsigned char matrixBtnScanByFlip(char wait) {
+	static unsigned char btnCode;
+	P1 = 0x0F;
+	if (P1 != 0x0F) {
+		delay(20);
+		if (P1 != 0x0F) {
+			P1 = 0x0F;
+			switch (P1) {
+				case 0x07: btnCode = 1; break;
+				case 0x0B: btnCode = 2; break;
+				case 0x0D: btnCode = 3; break;
+				case 0x0E: btnCode = 4; break;
+			}  
+			P1 = 0xF0;
+			switch(P1) {
+				case 0x70: btnCode = btnCode; break;
+				case 0xB0: btnCode += 4; break;
+				case 0xD0: btnCode += 8; break;
+				case 0xE0: btnCode += 12; break;
+			}
+			while (wait && P1 != 0xF0);
+		}
+	} else btnCode = 0;
+  return btnCode;
 }
