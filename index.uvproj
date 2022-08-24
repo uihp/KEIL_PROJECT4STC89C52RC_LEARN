@@ -388,36 +388,6 @@
               <FileType>5</FileType>
               <FilePath>.\T0.h</FilePath>
             </File>
-            <File>
-              <FileName>DS1302.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\DS1302.c</FilePath>
-            </File>
-            <File>
-              <FileName>DS1302.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\DS1302.h</FilePath>
-            </File>
-            <File>
-              <FileName>indpdtbtn.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\indpdtbtn.c</FilePath>
-            </File>
-            <File>
-              <FileName>indpdtbtn.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\indpdtbtn.h</FilePath>
-            </File>
-            <File>
-              <FileName>LCD1602.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LCD1602.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD1602.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LCD1602.h</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>
