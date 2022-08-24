@@ -1,6 +1,8 @@
 #include <REGX52.H>
 #include "delay.h"
 
+unsigned char globalMatrixBtnCode;
+
 unsigned char matrixBtnScanByRowColCheck()
 {
 	static unsigned char btnCode;
@@ -31,7 +33,7 @@ unsigned char matrixBtnScanByRowColCheck()
 	return btnCode;
 }
 
-unsigned char matrixBtnScanByFlip(char wait) {
+unsigned char matrixBtnScanByFlip(bit wait) {
 	static unsigned char btnCode;
 	P1 = 0x0F;
 	if (P1 != 0x0F) {
@@ -55,4 +57,41 @@ unsigned char matrixBtnScanByFlip(char wait) {
 		}
 	} else btnCode = 0;
   return btnCode;
+}
+
+unsigned char matrixBtnState() {
+	static unsigned char btnCode;
+	P1 = 0x0F;
+	if (P1 != 0x0F) {
+		if (P1 != 0x0F) {
+			P1 = 0x0F;
+			switch (P1) {
+				case 0x07: btnCode = 1; break;
+				case 0x0B: btnCode = 2; break;
+				case 0x0D: btnCode = 3; break;
+				case 0x0E: btnCode = 4; break;
+			}  
+			P1 = 0xF0;
+			switch(P1) {
+				case 0x70: btnCode = btnCode; break;
+				case 0xB0: btnCode += 4; break;
+				case 0xD0: btnCode += 8; break;
+				case 0xE0: btnCode += 12; break;
+			}
+		}
+	} else btnCode = 0;
+  return btnCode;
+}
+
+void matrixBtnEventLoop() {
+	static unsigned char state, last;
+	last = state;
+	state = matrixBtnState();
+	if (!state && last) globalMatrixBtnCode = last;
+}
+
+unsigned char matrixBtnScanByEventLoop() {
+	unsigned char tmp = globalMatrixBtnCode;
+	globalMatrixBtnCode = 0;
+	return tmp;
 }
