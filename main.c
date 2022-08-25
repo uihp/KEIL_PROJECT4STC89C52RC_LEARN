@@ -4,20 +4,37 @@
 #include "AT24C02.h"
 #include "indpdtbtn.h"
 #include "delay.h"
+#include "T0.h"
 
 float T;
 char TH, TL;
 unsigned char btnCode;
+
+void T0Routine() interrupt 1 {
+	static unsigned int T0Count = 0;
+	T0Count++;
+ 	TL0 = 0x66;
+ 	TH0 = 0xFC;
+	if (T0Count >= 20) {
+ 		T0Count = 0;
+		btnEventLoop();
+	}
+}
 
 void reviseThreshold() {
 	if (TH > 125) TH = 125;
 	else if (TH <= TL) TH++;
 	else if (TL >= TH) TL--;
 	else if (TL < -55) TL = -55;
+	if (TH <= TL) {
+		TH = 20;
+		TL = 15;
+	}
 }
 
 void main() {
 	convertT_DS18B20();
+	T0Set();
 	LCD_Init();
 	LCD_ShowString(1,1,"T:");
 	LCD_ShowString(2,1,"TH:");
@@ -53,6 +70,5 @@ void main() {
 		} else {
 			LCD_ShowString(1,13,"    ");
 		}
-		btnEventLoop();
 	}
 }

@@ -438,6 +438,16 @@
               <FileType>5</FileType>
               <FilePath>.\OneWire.h</FilePath>
             </File>
+            <File>
+              <FileName>T0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\T0.c</FilePath>
+            </File>
+            <File>
+              <FileName>T0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\T0.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
