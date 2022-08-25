@@ -379,44 +379,14 @@
               <FilePath>.\delay.h</FilePath>
             </File>
             <File>
-              <FileName>LCD1602.c</FileName>
+              <FileName>T0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\LCD1602.c</FilePath>
+              <FilePath>.\T0.c</FilePath>
             </File>
             <File>
-              <FileName>LCD1602.h</FileName>
+              <FileName>T0.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\LCD1602.h</FilePath>
-            </File>
-            <File>
-              <FileName>I2C.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\I2C.c</FilePath>
-            </File>
-            <File>
-              <FileName>I2C.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\I2C.h</FilePath>
-            </File>
-            <File>
-              <FileName>AT24C02.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\AT24C02.c</FilePath>
-            </File>
-            <File>
-              <FileName>AT24C02.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\AT24C02.h</FilePath>
-            </File>
-            <File>
-              <FileName>DS18B20.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\DS18B20.c</FilePath>
-            </File>
-            <File>
-              <FileName>DS18B20.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\DS18B20.h</FilePath>
+              <FilePath>.\T0.h</FilePath>
             </File>
             <File>
               <FileName>indpdtbtn.c</FileName>
@@ -429,24 +399,14 @@
               <FilePath>.\indpdtbtn.h</FilePath>
             </File>
             <File>
-              <FileName>OneWire.c</FileName>
+              <FileName>segdisplay.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\OneWire.c</FilePath>
+              <FilePath>.\segdisplay.c</FilePath>
             </File>
             <File>
-              <FileName>OneWire.h</FileName>
+              <FileName>segdisplay.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\OneWire.h</FilePath>
-            </File>
-            <File>
-              <FileName>T0.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\T0.c</FilePath>
-            </File>
-            <File>
-              <FileName>T0.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\T0.h</FilePath>
+              <FilePath>.\segdisplay.h</FilePath>
             </File>
           </Files>
         </Group>
