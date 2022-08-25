@@ -379,34 +379,24 @@
               <FilePath>.\delay.h</FilePath>
             </File>
             <File>
-              <FileName>T0.c</FileName>
+              <FileName>LCD1602.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\T0.c</FilePath>
+              <FilePath>.\LCD1602.c</FilePath>
             </File>
             <File>
-              <FileName>T0.h</FileName>
+              <FileName>LCD1602.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\T0.h</FilePath>
+              <FilePath>.\LCD1602.h</FilePath>
             </File>
             <File>
-              <FileName>indpdtbtn.c</FileName>
+              <FileName>XPT2046.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\indpdtbtn.c</FilePath>
+              <FilePath>.\XPT2046.c</FilePath>
             </File>
             <File>
-              <FileName>indpdtbtn.h</FileName>
+              <FileName>XPT2046.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\indpdtbtn.h</FilePath>
-            </File>
-            <File>
-              <FileName>segdisplay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\segdisplay.c</FilePath>
-            </File>
-            <File>
-              <FileName>segdisplay.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\segdisplay.h</FilePath>
+              <FilePath>.\XPT2046.h</FilePath>
             </File>
           </Files>
         </Group>

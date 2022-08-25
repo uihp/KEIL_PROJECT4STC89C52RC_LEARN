@@ -1,35 +1,20 @@
 #include <REGX52.H>
+#include "LCD1602.h"
 #include "delay.h"
-#include "indpdtbtn.h"
-#include "segdisplay.h"
-#include "T0.h"
+#include "XPT2046.h"
 
-sbit motor = P1^0;
-
-unsigned char btnCode, target = 0;
-
-void T0Routine() interrupt 1 {
-	static unsigned char T0Count = 0;
-	T0Count++;
-	T0Count %= 100;
-	TL0 = 0xA4;
-	TH0 = 0xFF;
-	motor = T0Count < target;
-}
+unsigned int adv;
 
 void main() {
-	T0Set();
-	nixieLongShow(1, 0);
-	while (1) { 
-		btnCode = independentBtnCheck();
-		if (btnCode) {
-			switch (btnCode) {
-				case 1: target = 0; break;
-				case 2: target = 50; break;
-				case 3: target = 75; break;
-				case 4: target = 100; break;
-			}
-			nixieLongShow(1, btnCode-1);
-		}
+	LCD_Init();
+	LCD_ShowString(1,1,"ADJ  NTC  GR");
+	while (1) {
+		adv = read_XPT2046(XPT2046_XP);
+		LCD_ShowNum(2,1,adv,3);
+		adv = read_XPT2046(XPT2046_YP);
+		LCD_ShowNum(2,6,adv,3);
+		adv = read_XPT2046(XPT2046_VBAT);
+		LCD_ShowNum(2,11,adv,3);
+		delay(100);
 	}
 }
