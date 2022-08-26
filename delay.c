@@ -7,9 +7,10 @@ void delay(unsigned int xms)		//@11.0592MHz
 		_nop_();
 		i = 2;
 		j = 199;
-		while (--i) {
+		do
+		{
 			while (--j);
-		}
+		} while (--i);
 		xms--;
 	}
 }
