@@ -3,7 +3,7 @@
 
 unsigned char matrixBtnScanByRowColCheck();
 unsigned char matrixBtnScanByFlip(bit);
-void matrixBtnEventLoop();
+void matrixBtnEventLoop(bit press);
 unsigned char matrixBtnScanByEventLoop();
 
 #endif

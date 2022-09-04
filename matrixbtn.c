@@ -83,11 +83,13 @@ unsigned char matrixBtnState() {
   return btnCode;
 }
 
-void matrixBtnEventLoop() {
+void matrixBtnEventLoop(bit press) {
 	static unsigned char state, last;
 	last = state;
 	state = matrixBtnState();
-	if (!state && last) globalMatrixBtnCode = last;
+	if (press) {
+		if (!state && last) globalMatrixBtnCode = last;
+	} else if (!last && state) globalMatrixBtnCode = state;
 }
 
 unsigned char matrixBtnScanByEventLoop() {

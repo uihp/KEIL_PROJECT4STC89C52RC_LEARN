@@ -185,7 +185,7 @@
         </Utilities>
         <Target51>
           <Target51Misc>
-            <MemoryModel>0</MemoryModel>
+            <MemoryModel>1</MemoryModel>
             <RTOS>0</RTOS>
             <RomSize>2</RomSize>
             <DataHold>0</DataHold>
@@ -379,16 +379,6 @@
               <FilePath>.\delay.h</FilePath>
             </File>
             <File>
-              <FileName>LCD1602.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LCD1602.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD1602.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LCD1602.h</FilePath>
-            </File>
-            <File>
               <FileName>T0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\T0.c</FilePath>
@@ -399,44 +389,54 @@
               <FilePath>.\T0.h</FilePath>
             </File>
             <File>
-              <FileName>I0.c</FileName>
+              <FileName>74HC595.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\I0.c</FilePath>
+              <FilePath>.\74HC595.c</FilePath>
             </File>
             <File>
-              <FileName>I0.h</FileName>
+              <FileName>74HC595.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\I0.h</FilePath>
+              <FilePath>.\74HC595.h</FilePath>
             </File>
             <File>
-              <FileName>IR.c</FileName>
+              <FileName>matrixled.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\IR.c</FilePath>
+              <FilePath>.\matrixled.c</FilePath>
             </File>
             <File>
-              <FileName>IR.h</FileName>
+              <FileName>matrixled.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\IR.h</FilePath>
+              <FilePath>.\matrixled.h</FilePath>
             </File>
             <File>
-              <FileName>T1.c</FileName>
+              <FileName>matrixbtn.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\T1.c</FilePath>
+              <FilePath>.\matrixbtn.c</FilePath>
             </File>
             <File>
-              <FileName>T1.h</FileName>
+              <FileName>matrixbtn.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\T1.h</FilePath>
+              <FilePath>.\matrixbtn.h</FilePath>
             </File>
             <File>
-              <FileName>motor.c</FileName>
+              <FileName>indpdtbtn.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\motor.c</FilePath>
+              <FilePath>.\indpdtbtn.c</FilePath>
             </File>
             <File>
-              <FileName>motor.h</FileName>
+              <FileName>indpdtbtn.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\motor.h</FilePath>
+              <FilePath>.\indpdtbtn.h</FilePath>
+            </File>
+            <File>
+              <FileName>segdisplay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\segdisplay.c</FilePath>
+            </File>
+            <File>
+              <FileName>segdisplay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\segdisplay.h</FilePath>
             </File>
           </Files>
         </Group>
