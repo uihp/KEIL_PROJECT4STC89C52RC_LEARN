@@ -51,9 +51,9 @@ void I0Routine() interrupt 0 {
 		if (!IR_Read) {
 			if (abs(IR_Time-START) < 500) IR_Read = 1;
 			else if (abs(IR_Time-REPEAT) < 500) {
-				IR_RF = 1;
 				TR0 = 0;
 				IR_Busy = 0;
+				IR_RF = 1;
 			}
 		} else {
 			if (abs(IR_Time-DATA0) < 500) IR_Data[IR_Pos/8]&=~(0x01<<((IR_Pos++)%8));
@@ -61,9 +61,9 @@ void I0Routine() interrupt 0 {
 			if (IR_Pos >= 32) {
 				IR_Pos = 0;
 				if((IR_Data[0]==~IR_Data[1]) && (IR_Data[2]==~IR_Data[3])) {
-					IR_DF = 1;
 					IR_Addr = IR_Data[0];
 					IR_Cmd = IR_Data[2];
+					IR_DF = 1;
 				}
 				TR0 = 0;
 				IR_Read = 0;

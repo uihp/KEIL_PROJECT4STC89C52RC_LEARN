@@ -379,14 +379,14 @@
               <FilePath>.\delay.h</FilePath>
             </File>
             <File>
-              <FileName>T0.c</FileName>
+              <FileName>T1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\T0.c</FilePath>
+              <FilePath>.\T1.c</FilePath>
             </File>
             <File>
-              <FileName>T0.h</FileName>
+              <FileName>T1.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\T0.h</FilePath>
+              <FilePath>.\T1.h</FilePath>
             </File>
             <File>
               <FileName>74HC595.c</FileName>
@@ -419,16 +419,6 @@
               <FilePath>.\matrixbtn.h</FilePath>
             </File>
             <File>
-              <FileName>indpdtbtn.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\indpdtbtn.c</FilePath>
-            </File>
-            <File>
-              <FileName>indpdtbtn.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\indpdtbtn.h</FilePath>
-            </File>
-            <File>
               <FileName>segdisplay.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\segdisplay.c</FilePath>
@@ -437,6 +427,36 @@
               <FileName>segdisplay.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\segdisplay.h</FilePath>
+            </File>
+            <File>
+              <FileName>T0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\T0.c</FilePath>
+            </File>
+            <File>
+              <FileName>T0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\T0.h</FilePath>
+            </File>
+            <File>
+              <FileName>I0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\I0.c</FilePath>
+            </File>
+            <File>
+              <FileName>I0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\I0.h</FilePath>
+            </File>
+            <File>
+              <FileName>IR.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\IR.c</FilePath>
+            </File>
+            <File>
+              <FileName>IR.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\IR.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -4,8 +4,8 @@
 #include "matrixled.h"
 #include "matrixbtn.h"
 #include "segdisplay.h"
-#include "indpdtbtn.h"
-#include "T0.h"
+#include "T1.h"
+#include "IR.h"
 
 char p[8][8];
 char e[63][2];
@@ -14,17 +14,18 @@ char y = 0;
 char l = 1;
 char mode = 7;
 char cnt = 0;
+char speed = 0;
 
-void T0Routine() interrupt 1
+void T1Routine() interrupt 3
 {
-	static unsigned int T0Count4Update = 0, T0Count4Btn = 0;
+	static unsigned int Count4Update = 0, Count4Btn = 0;
 	char i, j, randint;
-	T0Count4Update++;
-	T0Count4Btn++;
-	TL0 = 0x66;
-	TH0 = 0xFC;
-	if (T0Count4Update >= 500) {
-		T0Count4Update = 0;
+	Count4Update++;
+	Count4Btn++;
+	TL1 = 0x66;
+	TH1 = 0xFC;
+	if (Count4Update >= 500 - speed * 100) {
+		Count4Update = 0;
 		cnt = 0;
 		switch (mode) {
 			case 2: y--;y+=(y<0)*8; break;
@@ -38,7 +39,7 @@ void T0Routine() interrupt 1
 			for (i=0; i<8; i++) {
 				for (j=0; j<8; j++) {
 					if (p[i][j] > 0) p[i][j]++;
-					else if (i != y && j != x) {
+					else if (!(i == y && j == x)) {
 						e[cnt][0] = i;
 						e[cnt][1] = j;
 						cnt++;
@@ -55,13 +56,14 @@ void T0Routine() interrupt 1
 		}
 		p[y][x] = l;
 	}
-	if (T0Count4Btn >= 20) matrixBtnEventLoop(0);
+	if (Count4Btn >= 20) matrixBtnEventLoop(0);
 }
 
 void main()
 {
 	unsigned char i, j, dat, btnCode;
-	T0Set();
+	init_IR();
+	T1Set();
 	for (i=0;i<8;i++) { for (j=0;j<8;j++) { p[i][j] = 0; } }
 	p[y][x] = l;
 	p[5][5] = -1;
@@ -74,12 +76,30 @@ void main()
 			matrixLED_ShowCol(i, dat);
 		}
 		btnCode = matrixBtnScanByEventLoop();
+		if (getDF_IR())	{
+			switch (IR_Cmd) {
+				case IR_2: btnCode = 2;break;
+				case IR_8: btnCode = 10;break;
+				case IR_4: btnCode = 5;break;
+				case IR_6: btnCode = 7;break;
+				case IR_TOG: TR1 = !TR1;break;
+				case IR_MIN: speed--;break;
+				case IR_ADD: speed++;break;
+			}
+		}
 		if ((btnCode == 2 || btnCode == 10 || btnCode == 5 || btnCode == 7)
 			&& abs(mode-btnCode) != 2
 			&& abs(mode-btnCode) != 8)
 			mode = btnCode;
-		if (independentBtnCheck()) TR0 = !TR0;
+		else if (TR1) {
+			switch (btnCode) {
+				case 4: speed++;break;
+				case 8: speed--;break;
+				case 12: while(!P1_5);TR1 = 0;break;
+			}
+		} else if (matrixBtnScanByFlip(1) == 12) TR1 = 1;
 		P2 = 0xFE<<(l-1)%8;
 	}
+	P2 = P0 = 0;
 	nixieDynamicShow(l);
 }
