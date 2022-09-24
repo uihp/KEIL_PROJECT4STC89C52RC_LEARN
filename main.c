@@ -1,105 +1,218 @@
 #include <REGX52.H>
-#include <INTRINS.H>
 #include <stdlib.h>
 #include "matrixled.h"
 #include "matrixbtn.h"
 #include "segdisplay.h"
-#include "T1.h"
-#include "IR.h"
+#include "T0.h"
 
-char p[8][8];
-char e[63][2];
-char x = 0;
-char y = 0;
-char l = 1;
-char mode = 7;
-char cnt = 0;
-char speed = 0;
+#define HEIGHT 8
+#define BLOCK_HEIGHT 4
+#define BLOCK_KINDNUM 4
 
-void T1Routine() interrupt 3
+int score;
+char screen[HEIGHT];
+const unsigned char code blocks[BLOCK_KINDNUM][4][BLOCK_HEIGHT] = {
+	0, 0x38, 0x20, 0,
+	0x10, 0x10, 0x18, 0,
+	0, 0x08, 0x38, 0,
+	0x30, 0x10, 0x10, 0,
+
+	0x20, 0x30, 0x10, 0,
+	0x18, 0x30, 0, 0,
+	0x20, 0x30, 0x10, 0,
+	0x18, 0x30, 0, 0,
+
+	0x10, 0x30, 0x20, 0,
+	0x30, 0x18, 0, 0,
+	0x10, 0x30, 0x20, 0,
+	0x30, 0x18, 0, 0,
+
+	0, 0x38, 0x08, 0,
+	0x10, 0x10, 0x30, 0,
+	0x20, 0x38, 0, 0,
+	0x18, 0x10, 0x10, 0};
+unsigned char block[BLOCK_HEIGHT];
+char dropdis, movedis, blktype, blkdire;
+
+bit newb()
+{
+	char i;
+	blktype = rand() % BLOCK_KINDNUM; // Random
+	dropdis = 0;
+	movedis = 0;
+	blkdire = 0;
+	for (i = 0; i < BLOCK_HEIGHT; i++)
+	{
+		block[i] = blocks[blktype][0][i];
+		if (screen[i] & block[i])
+			return 0; // Occupied
+	}
+	return 1;
+}
+
+bit drop()
+{
+	char i;
+	for (i = 0; i < BLOCK_HEIGHT; i++)
+		if (dropdis + i + 1 >= HEIGHT && block[i] || screen[dropdis + i + 1] & block[i])
+			return 0; // Bottomed || Touched
+	dropdis++;
+	return 1;
+}
+
+void fix()
+{
+	char i;
+	for (i = 0; i < BLOCK_HEIGHT; i++)
+		screen[dropdis + i] |= block[i];
+}
+
+void del()
+{
+	char i, j;
+	for (i = 0; i < HEIGHT; i++)
+		if (screen[i] == -1)
+		{
+			for (j = i; j >= 0; j--)
+				screen[j] = j ? screen[j - 1] : 0;
+			score++;
+		}
+}
+
+void move(bit dire)
+{
+	char i;
+	for (i = 0; i < BLOCK_HEIGHT; ++i)
+		if (
+			block[i] & 0x80 && !dire ||
+			block[i] & 0x01 && dire ||
+			screen[dropdis + i] & (dire ? block[i] >> 1 : block[i] << 1))
+			return; // Blocked
+	for (i = 0; i < BLOCK_HEIGHT; ++i)
+		if (dire)
+			block[i] >>= 1;
+		else
+			block[i] <<= 1;
+	movedis += dire ? 1 : -1;
+}
+
+void change()
+{
+	char i;
+	blkdire++;
+	blkdire %= 4;
+#define OBKL blocks[blktype][blkdire][i]
+#define MBKL (movedis > 0 ? OBKL >> movedis : OBKL << -movedis)
+	for (i = 0; i < BLOCK_HEIGHT; i++)
+	{
+		if (dropdis + i >= HEIGHT && OBKL)
+			return; // Bottomed
+		movedis--;
+		if (MBKL & 0x01)
+		{
+			movedis++;
+			blkdire = blkdire ? blkdire - 1 : 3;
+			return;
+		} // Overflow
+		movedis++;
+		if (screen[dropdis + i] & MBKL)
+			return; // Blocked
+	}
+	for (i = 0; i < BLOCK_HEIGHT; i++)
+		block[i] = MBKL;
+}
+
+#define OVER 0
+#define NEWB 1
+#define DROP 2
+
+bit playing = 1;
+bit falling = 0;
+
+void TRountine4Tetris()
 {
 	static unsigned int Count4Update = 0, Count4Btn = 0;
-	char i, j, randint;
 	Count4Update++;
 	Count4Btn++;
-	TL1 = 0x66;
-	TH1 = 0xFC;
-	if (Count4Update >= 500 - speed * 100) {
+	if (Count4Update >= 1000)
+	{
 		Count4Update = 0;
-		cnt = 0;
-		switch (mode) {
-			case 2: y--;y+=(y<0)*8; break;
-			case 10: y++;y-=(y>=8)*8; break;
-			case 5: x--;x+=(x<0)*8; break;
-			case 7: x++;x-=(x>=8)*8; break;
+		if (falling)
+		{
+			falling = drop();
+			if (!falling)
+				fix();
 		}
-		if (p[y][x] > 1) mode = 0;
-		else if (p[y][x] < 0) {
-			l++;
-			for (i=0; i<8; i++) {
-				for (j=0; j<8; j++) {
-					if (p[i][j] > 0) p[i][j]++;
-					else if (!(i == y && j == x)) {
-						e[cnt][0] = i;
-						e[cnt][1] = j;
-						cnt++;
-					}
-				}
-			}
-			randint = rand()%cnt;
-			p[e[randint][0]][e[randint][1]] = -1;
+		else
+		{
+			del();
+			falling = newb();
+			playing = falling;
 		}
-		for (i=0; i<8; i++) {
-			for (j=0; j<8; j++) {
-				if (p[i][j] > 0) p[i][j]--;
-			}
-		}
-		p[y][x] = l;
 	}
-	if (Count4Btn >= 20) matrixBtnEventLoop(0);
+	if (Count4Btn >= 20)
+		matrixBtnEventLoop(0);
+}
+
+void T0Routine() interrupt 1
+{
+	TL0 = 0x66;
+	TH0 = 0xFC;
+	TRountine4Tetris();
 }
 
 void main()
 {
-	unsigned char i, j, dat, btnCode;
-	init_IR();
-	T1Set();
-	for (i=0;i<8;i++) { for (j=0;j<8;j++) { p[i][j] = 0; } }
-	p[y][x] = l;
-	p[5][5] = -1;
-	while (mode) {
-		for (i=0;i<8;i++) {
-			dat = 0x00;
-			for (j=0; j<8; j++) {
-				if (p[j][i]) dat |= (0x80>>j);
-			}
-			matrixLED_ShowCol(i, dat);
+	unsigned char i, j, blockLine;
+	unsigned char flush[HEIGHT], temp[HEIGHT];
+	T0Set();
+	while (playing)
+	{
+		for (i = 0; i < HEIGHT; i++)
+		{
+			blockLine = (dropdis + BLOCK_HEIGHT > i && i >= dropdis ? block[i - dropdis] : 0);
+			flush[i] = screen[i] | blockLine;
 		}
-		btnCode = matrixBtnScanByEventLoop();
-		if (getDF_IR())	{
-			switch (IR_Cmd) {
-				case IR_2: btnCode = 2;break;
-				case IR_8: btnCode = 10;break;
-				case IR_4: btnCode = 5;break;
-				case IR_6: btnCode = 7;break;
-				case IR_TOG: TR1 = !TR1;break;
-				case IR_MIN: speed--;break;
-				case IR_ADD: speed++;break;
+		for (i = 0; i < HEIGHT; i++)
+			temp[i] = flush[i];
+		for (i = 0; i < HEIGHT; ++i)
+		{
+			for (j = 0; j < HEIGHT; ++j)
+			{
+				if (temp[i] & (0x80 >> j))
+					flush[j] |= (0x80 >> i);
+				else
+					flush[j] &= ~(0x80 >> i);
 			}
 		}
-		if ((btnCode == 2 || btnCode == 10 || btnCode == 5 || btnCode == 7)
-			&& abs(mode-btnCode) != 2
-			&& abs(mode-btnCode) != 8)
-			mode = btnCode;
-		else if (TR1) {
-			switch (btnCode) {
-				case 4: speed++;break;
-				case 8: speed--;break;
-				case 12: while(!P1_5);TR1 = 0;break;
+		for (i = 0; i < HEIGHT; i++)
+			matrixLED_ShowCol(i, flush[i]);
+		if (TR0)
+		{
+			switch (matrixBtnScanByEventLoop())
+			{
+			case 1:
+				move(0);
+				break;
+			case 2:
+				move(1);
+				break;
+			case 3:
+				change();
+				break;
+			case 4:
+				while (drop())
+					;
+				break;
+			case 5:
+				while (!P1_6)
+					;
+				TR0 = 0;
+				break;
 			}
-		} else if (matrixBtnScanByFlip(1) == 12) TR1 = 1;
-		P2 = 0xFE<<(l-1)%8;
+		}
+		else if (matrixBtnScanByFlip(1) == 5)
+			TR0 = 1;
 	}
-	P2 = P0 = 0;
-	nixieDynamicShow(l);
+	nixieDynamicShow(score);
 }
