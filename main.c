@@ -3,11 +3,14 @@
 #include "matrixled.h"
 #include "matrixbtn.h"
 #include "segdisplay.h"
+#include "indpdtbtn.h"
+#include "DS18B20.h"
+#include "XPT2046.h"
 #include "T0.h"
 
 #define HEIGHT 8
 #define BLOCK_HEIGHT 4
-#define BLOCK_KINDNUM 4
+#define BLOCK_KINDNUM 5
 
 int score;
 char screen[HEIGHT];
@@ -30,7 +33,12 @@ const unsigned char code blocks[BLOCK_KINDNUM][4][BLOCK_HEIGHT] = {
 	0, 0x38, 0x08, 0,
 	0x10, 0x10, 0x30, 0,
 	0x20, 0x38, 0, 0,
-	0x18, 0x10, 0x10, 0};
+	0x18, 0x10, 0x10, 0,
+
+	0x10, 0x38, 0, 0,
+	0x20, 0x30, 0x20, 0,
+	0x38, 0x10, 0, 0,
+	0x10, 0x30, 0x10, 0};
 unsigned char block[BLOCK_HEIGHT];
 char dropdis, movedis, blktype, blkdire;
 
@@ -44,8 +52,8 @@ bit newb()
 	for (i = 0; i < BLOCK_HEIGHT; i++)
 	{
 		block[i] = blocks[blktype][0][i];
-		if (screen[i] & block[i])
-			return 0; // Occupied
+		if (screen[i] & block[i]) // Occupied
+			return 0;
 	}
 	return 1;
 }
@@ -54,8 +62,8 @@ bit drop()
 {
 	char i;
 	for (i = 0; i < BLOCK_HEIGHT; i++)
-		if (dropdis + i + 1 >= HEIGHT && block[i] || screen[dropdis + i + 1] & block[i])
-			return 0; // Bottomed || Touched
+		if (dropdis + i + 1 >= HEIGHT && block[i] || screen[dropdis + i + 1] & block[i]) // Bottomed || Touched
+			return 0;
 	dropdis++;
 	return 1;
 }
@@ -86,8 +94,8 @@ void move(bit dire)
 		if (
 			block[i] & 0x80 && !dire ||
 			block[i] & 0x01 && dire ||
-			screen[dropdis + i] & (dire ? block[i] >> 1 : block[i] << 1))
-			return; // Blocked
+			screen[dropdis + i] & (dire ? block[i] >> 1 : block[i] << 1)) // Blocked
+			return;
 	for (i = 0; i < BLOCK_HEIGHT; ++i)
 		if (dire)
 			block[i] >>= 1;
@@ -96,27 +104,27 @@ void move(bit dire)
 	movedis += dire ? 1 : -1;
 }
 
+#define OBKL blocks[blktype][blkdire][i]
+#define MBKL (movedis > 0 ? OBKL >> movedis : OBKL << -movedis)
 void change()
 {
 	char i;
 	blkdire++;
 	blkdire %= 4;
-#define OBKL blocks[blktype][blkdire][i]
-#define MBKL (movedis > 0 ? OBKL >> movedis : OBKL << -movedis)
 	for (i = 0; i < BLOCK_HEIGHT; i++)
 	{
-		if (dropdis + i >= HEIGHT && OBKL)
-			return; // Bottomed
+		if (dropdis + i >= HEIGHT && OBKL) // Bottomed
+			return;
 		movedis--;
-		if (MBKL & 0x01)
+		if (MBKL & 0x01) // Overflow
 		{
 			movedis++;
 			blkdire = blkdire ? blkdire - 1 : 3;
 			return;
-		} // Overflow
+		}
 		movedis++;
-		if (screen[dropdis + i] & MBKL)
-			return; // Blocked
+		if (screen[dropdis + i] & MBKL) // Blocked
+			return;
 	}
 	for (i = 0; i < BLOCK_HEIGHT; i++)
 		block[i] = MBKL;
@@ -128,13 +136,14 @@ void change()
 
 bit playing = 1;
 bit falling = 0;
+bit quickly = 0;
 
 void TRountine4Tetris()
 {
 	static unsigned int Count4Update = 0, Count4Btn = 0;
 	Count4Update++;
 	Count4Btn++;
-	if (Count4Update >= 1000)
+	if (Count4Update >= 1000 - quickly * 500)
 	{
 		Count4Update = 0;
 		if (falling)
@@ -166,6 +175,8 @@ void main()
 	unsigned char i, j, blockLine;
 	unsigned char flush[HEIGHT], temp[HEIGHT];
 	T0Set();
+	convertT_DS18B20();
+	srand(read_XPT2046(XPT2046_XP) * read_XPT2046(XPT2046_YP) * read_XPT2046(XPT2046_VBAT) * (unsigned long)(readT_DS18B20() * 10000));
 	while (playing)
 	{
 		for (i = 0; i < HEIGHT; i++)
@@ -185,8 +196,7 @@ void main()
 					flush[j] &= ~(0x80 >> i);
 			}
 		}
-		for (i = 0; i < HEIGHT; i++)
-			matrixLED_ShowCol(i, flush[i]);
+		matrixLED_LongShow(flush);
 		if (TR0)
 		{
 			switch (matrixBtnScanByEventLoop())
@@ -202,17 +212,20 @@ void main()
 				break;
 			case 4:
 				while (drop())
-					;
-				break;
-			case 5:
-				while (!P1_6)
-					;
-				TR0 = 0;
+				{
+				};
 				break;
 			}
 		}
-		else if (matrixBtnScanByFlip(1) == 5)
-			TR0 = 1;
+		switch (independentBtnCheck())
+		{
+		case 1:
+			TR0 = !TR0;
+			break;
+		case 2:
+			quickly = !quickly;
+			break;
+		}
 	}
 	nixieDynamicShow(score);
 }
